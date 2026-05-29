@@ -1,6 +1,20 @@
+
 > **Warning**
 > this doc is out-of-date ,check the new api document
 
+# Temi Wizard-of-Oz Testing
+A Wizard-of-Oz testing application that enables remote-controlling the actions of the Temi robot. Used in our CHI'21 paper "Patterns for Representing Knowledge Graphs to Communicate Situational Knowledge of Service Robots".
+
+---
+
+## temi v3 (Panda4 / Android 11) Support Version
+This is a forked version of `temiWoz` updated to support **temi 3 (Panda4 mainboard / Android 11)**. 
+
+### Key Changes
+* **Modernized Build Configuration:** Updated Gradle, Android Gradle Plugin (AGP), and Target SDK versions to resolve compilation errors caused by legacy Android 6.0 settings.
+* **Panda4 Compatibility:** Verified building, deploying, and WebSocket communication on actual temi 3 hardware.
+
+---
 # Temi Wizard-of-Oz Testing
 A Wizard-of-Oz testing application that enables remote-controlling the actions of the Temi robot. Used in our CHI'21 paper "Patterns for Representing Knowledge Graphs to Communicate Situational Knowledge of Service Robots".
 
