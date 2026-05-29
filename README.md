@@ -8,7 +8,7 @@ A Wizard-of-Oz testing application that enables remote-controlling the actions o
 ---
 
 ## temi v3 (Panda4 / Android 11) Support Version
-This is a forked version of `temiWoz` updated to support **temi 3 (Panda4 mainboard / Android 11)**. 
+This is a forked version of `temiWoz` updated to support **temi v3 (Panda4 mainboard / Android 11)**. 
 
 ### Key Changes
 * **Modernized Build Configuration:** Updated Gradle, Android Gradle Plugin (AGP), and Target SDK versions to resolve compilation errors caused by legacy Android 6.0 settings.
