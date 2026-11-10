@@ -68,8 +68,26 @@ public class RobotApi implements TtsListener,
 
     // location related
     public void gotoLocation(String location, String id) {
+        java.util.List<String> locs = robot.getLocations();
+        android.util.Log.d("TemiWoz", "goTo request: [" + location + "] locations=" + locs);
+        try {
+            server.broadcast(new org.json.JSONObject().put("event","gotoRequest")
+                .put("id", id).put("location", location).put("knownLocations", new org.json.JSONArray(locs)).toString());
+        } catch (Exception e) { e.printStackTrace(); }
         robot.goTo(location);
+        android.util.Log.d("TemiWoz", "goTo sent");
+        try {
+            server.broadcast(new org.json.JSONObject().put("event","gotoAccepted")
+                .put("id", id).put("accepted", true).toString());
+        } catch (Exception e) { e.printStackTrace(); }
         goto_id = id;
+    }
+
+    public void getLocations(String id) {
+        try {
+            server.broadcast(new org.json.JSONObject().put("id", id)
+                .put("locations", new org.json.JSONArray(robot.getLocations())).toString());
+        } catch (Exception e) { e.printStackTrace(); }
     }
     public void saveLocation(String location, String id){
         boolean finished = robot.saveLocation(location);
@@ -261,12 +279,12 @@ public class RobotApi implements TtsListener,
 
     @Override
     public void onGoToLocationStatusChanged(@NotNull String location, @GoToLocationStatus String status, int descriptionId, String description) {
-        if (status.equals("complete")) {
-            try {
-                server.broadcast(new JSONObject().put("id", goto_id).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        try {
+            server.broadcast(new JSONObject().put("event","gotoStatus")
+                .put("id", goto_id).put("location", location)
+                .put("status", status).put("description", String.valueOf(description)).toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

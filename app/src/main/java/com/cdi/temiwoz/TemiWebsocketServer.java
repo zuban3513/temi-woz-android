@@ -57,6 +57,7 @@ public class TemiWebsocketServer extends WebSocketServer {
 
     @Override
     public void onMessage( WebSocket conn, String message ) {
+        android.util.Log.d("TemiWoz", "onMessage: " + message);
 
         //conn.send("get a new message resolving..." + message);
         try {
@@ -94,6 +95,9 @@ public class TemiWebsocketServer extends WebSocketServer {
                     break;
                 case "turn":
                     robot.turnBy(cmd.getInt("angle"), cmd.getString("id"));
+                    break;
+                case "getLocations":
+                    robot.getLocations(cmd.getString("id"));
                     break;
                 case "getContact":
                     robot.getContact(cmd.getString("id"));
