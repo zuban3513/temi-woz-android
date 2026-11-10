@@ -5,10 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.net.http.SslError;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.webkit.SslErrorHandler;
 
 import java.net.UnknownHostException;
 
@@ -45,12 +49,38 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         webSettings.setSupportZoom(false);
         webSettings.setDomStorageEnabled(true);
         webSettings.setBuiltInZoomControls(false);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+
+        // SSLエラー(自己署名証明書)を無視してロード継続 + エラー時の状態をログ化
+        interfaceView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                android.util.Log.d("TemiWoz", "SSL error ignored: " + error);
+                handler.proceed();
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                android.util.Log.e("TemiWoz", "WebView error: " + errorCode + " " + description + " url=" + failingUrl);
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                android.util.Log.d("TemiWoz", "onPageStarted: " + url);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                android.util.Log.d("TemiWoz", "onPageFinished: " + url);
+            }
+        });
 
 
 
         setContentView(interfaceView);
 
-        interfaceView.loadUrl("http://baidu.com");
+        interfaceView.loadUrl("about:blank");
 
         robot = Robot.getInstance();
         robotApi = new RobotApi(robot);
@@ -110,6 +140,12 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     }
 
     public void setInterfaceUrl(String url) {
-        interfaceView.loadUrl(url);
+        String current = interfaceView.getUrl();
+        if (url.equals(current)) {
+            // 同一URLでも確実に再読込(エラー画面からの回復)
+            interfaceView.reload();
+        } else {
+            interfaceView.loadUrl(url);
+        }
     }
 }
